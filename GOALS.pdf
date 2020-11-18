@@ -1,0 +1,21 @@
+The project goals detailed below represent a summary of the dataset - including its format and source 
+location - as well as the distinct algorithms we expect to implement in our final project.  These goals 
+pertain to our team for CS 225 Data Structures, composed of Hrishikesh Deshmukh, Sabar Nimmagadda, Lloyd 
+Quadros, and Bobby Wang.  These project goals are relevant only to the Fall 2020 semester.
+
+We intend on choosing the OpenFlights dataset, which contains a historical example of flight routes and 
+corresponding airports from recorded data in 2014.  The expectation is that our group will process the 
+OpenFlights dataset and load one or more data files - such as the flight routes - into a directed graph.  
+Our code will proceed to use the graph structure to run three different algorithms of interest.  For the 
+traversal algorithm we intend to select and implement DFS (Depth First Search) because it is the most 
+logical traversal for OpenFlights.  It is far more useful to traverse quickly from one node to the 
+destination node rather than broadly sweep a swath of nearby nodes in the graph.  For our covered algorithms 
+we will implement a Shortest Path algorithm in order to identify efficient, quick, and preferred routes.  
+Specifically, we will either employ the Floyd-Warshall Algorithm or Dijkstra’s Algorithm.  Lastly, our 
+group has proposed to utilize the Landmark Path algorithm - from the complex and uncovered options - in 
+order to find the shortest pathway between two points and through a distinct third location.  These 
+algorithms will also help us answer the key question of how our graph weights should be calculated.  To 
+add on to that, our team’s goal is to construct a thorough test bench for each of the three algorithms 
+listed above and generate test cases similar to those we have seen throughout the course of this class.  
+The ultimate expectation is that our final code will be functional, dynamic, and executable on the EWS 
+system, only employing publicly installed libraries and the team’s code in our group repository.
