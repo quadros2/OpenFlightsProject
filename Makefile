@@ -1,5 +1,5 @@
 EXENAME = finalproj
-OBJS = graph.o main.o
+OBJS = graph.o Airport.o main.o
 
 CXX = clang++
 CXXFLAGS = $(CS225) -std=c++1y -stdlib=libc++ -c -g -O0 -Wall -Wextra -pedantic
@@ -33,8 +33,16 @@ $(EXENAME): output_msg $(OBJS)
 main.o : main.cpp graph.h
 	$(CXX) $(CXXFLAGS) main.cpp
 
-graph.o : graph.cpp graph.h
+Airport.o : Airport.cpp Airport.h
+	$(CXX) $(CXXFLAGS) Airport.cpp
+
+
+graph.o : graph.cpp graph.h Airport.h
 	$(CXX) $(CXXFLAGS) graph.cpp
 
+
+test: tests/catchmain.cpp tests/tests.cpp graph.cpp Airport.cpp
+	$(LD) tests/catchmain.cpp tests/tests.cpp graph.cpp Airport.cpp $(LDFLAGS) -o test
+
 clean :
-	-rm -f *.o $(EXENAME)
+	-rm -f *.o $(EXENAME) test
