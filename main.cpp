@@ -3,11 +3,10 @@
 #include "Airport.h"
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 int main() {
-    Graph a = Graph("data/airports.txt");
+    Graph a("data/airports.txt");
     std::cout << a.verticies.size() << std::endl;
-    std::cout << a.verticies.at(200).name << std::endl;
-    std::cout << a.verticies.at(167).latitude << std::endl;
-    std::cout << a.verticies.at(357).longitude << std::endl;
+    return 0;
 }
