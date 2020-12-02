@@ -48,6 +48,8 @@ Graph::Graph(std::string fileName) {
         double latitude = std::stod(result.at(result.size() - 8));
         double longitude = std::stod(result.at(result.size() - 7));
         std::string name = result.at(1);
+        name.erase(name.size() - 1);
+        name.erase(name.begin());
 
         //creates airport and puts it in a verticies unordered map.
         Airport airport = Airport(latitude, longitude, name);
@@ -70,7 +72,6 @@ Graph::Graph(std::string fileName) {
             //according to usgs.gov, one degree of latitude is ~69 miles, one degree of longitude is ~54.6 miles
             double distance = sqrt(pow((airportOne.longitude - airportTwo.longitude) * 54.6, 2) 
                 + pow((airportOne.latitude - airportTwo.latitude) * 69, 2));
-            std::cout << distance << std::endl;
             //only adding edges between airports that are within 800 nautical miles
             if (distance < 800) {
                 adjacencyMatrix[airportOne.name][airportTwo.name] = distance;
@@ -79,9 +80,52 @@ Graph::Graph(std::string fileName) {
             }
         }
     }
+}
 
+void Graph::insertVertex(double latitude, double longitude, std::string airportName) {
+    Airport airport = Airport(latitude, longitude, airportName);
+    //if vertex does not exist already, add it and make empty entry in adjancy matrix.
+    if (verticies.find(airportName) == verticies.end()) {
+        verticies[airportName] = airport;
+        adjacencyMatrix[airportName] = std::unordered_map<std::string, double>();
+    }
+    //insert edges that can be made by new vertex
+    for (auto i = verticies.begin(); i != verticies.end(); i++) {
+        Airport airportTwo = i->second;
+        if (airportTwo.name == airport.name) {
+            continue;
+        }
+        double distance = sqrt(pow((airport.longitude - airportTwo.longitude) * 54.6, 2) 
+            + pow((airport.latitude - airportTwo.latitude) * 69, 2));
+        if (distance < 800) {
+            adjacencyMatrix[airport.name][airportTwo.name] = distance;
+            adjacencyMatrix[airportTwo.name][airport.name] = distance;
+        } else {
+            adjacencyMatrix[airport.name][airportTwo.name] = 0;
+            adjacencyMatrix[airportTwo.name][airport.name] = 0;
+        }
+    }
 
+}
 
+//logic borrowed from graph.h in lab_ml
+void Graph::removeVertex(std::string airportName) {
+    if (adjacencyMatrix.find(airportName) != adjacencyMatrix.end()) {
+        for (auto it = adjacencyMatrix[airportName].begin(); it != adjacencyMatrix[airportName].end(); it++) {
+            std::string u = it->first;
+            adjacencyMatrix[u].erase(airportName); 
+        }
+        
+        adjacencyMatrix.erase(airportName);
+        for(auto it2 = adjacencyMatrix.begin(); it2 != adjacencyMatrix.end(); it2++) {
+            std::string u = it2->first;
+            if (it2->second.find(airportName) != it2->second.end()) {
+                it2->second.erase(airportName);
+            }
+        }
+
+        verticies.erase(airportName);
+    }
 }
 
 

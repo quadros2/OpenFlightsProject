@@ -3,15 +3,13 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-
+using std::string;
 class Graph {
     public:
         Graph();
         Graph(std::string fileName);
-        void insertVertex(Airport airport);
-        void insertEdge(Airport origin, Airport destination);
-        void removeVertex(Airport airport);
-        void removeEdge(Airport origin, Airport destination);
+        void insertVertex(double latitude, double longit, string name);
+        void removeVertex(string airportName);
         std::vector<Airport> incidentEdges(Airport & airport);
         bool areAdjacent(Airport one, Airport two);
         std::unordered_map<std::string, Airport> verticies;
