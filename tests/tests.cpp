@@ -9,20 +9,23 @@
 
 TEST_CASE("Graph Properly parses full dataset") {
     Graph a = Graph("data/airports.txt");
-    //make a graph of the data and see if it makes correct verticies.
-    /**
-    REQUIRE (a.verticies.at(200).name == "\"Southeast Texas Regional Airport\"");
-    REQUIRE (a.verticies.at(347).name == "\"John Glenn Columbus International Airport\"");
-    REQUIRE (a.verticies.at(418).name == "\"Chicago O'Hare International Airport\"");
 
-    REQUIRE (a.verticies.at(167).latitude == 41.16350173950195);
-    REQUIRE (a.verticies.at(419).latitude == 26.3784999847);
-    REQUIRE (a.verticies.at(449).latitude == 29.99340057373047);
+   //Checks for correct size.
+   REQUIRE (a.verticies.size() == 473);
+   //Checks for adjecency functionality. 
+   REQUIRE ( a.adjacencyMatrix["St Paul Island Airport"].size() == 472);
+   a.insertVertex(35.0, -116.0, "my airport");
+   //Checks if vertex properties are working.
+   REQUIRE (a.verticies.size() == 474);
+   REQUIRE ( a.adjacencyMatrix["St Paul Island Airport"].size() == 473);
+   REQUIRE (a.verticies["my airport"].latitude == 35);
+   REQUIRE (a.verticies["my airport"].longitude == -116);
+   a.removeVertex("my airport");
+   //Checking if remove reduces size of the vertex vector.
+   REQUIRE(a.verticies.size() == 473);
+   //Making sure the adjacency for the removed vertex is empty.
+   REQUIRE(a.adjacencyMatrix["my airport"].size() == 0);
+   //Checking if the adjacency for a different vertex is modified after removal. 
+   REQUIRE ( a.adjacencyMatrix["St Paul Island Airport"].size() == 472);
 
-    REQUIRE (a.verticies.at(357).longitude == -80.6343994141);
-    REQUIRE (a.verticies.at(470).longitude == -147.6139984);
-    REQUIRE (a.verticies.at(125).longitude == -100.288002014);
-    //makes sure every datapoint is converted to an airport vertex (473 datapoints in our dataset).
-    REQUIRE (a.verticies.size() == 473);    
-    **/
 }
