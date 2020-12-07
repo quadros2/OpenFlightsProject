@@ -4,12 +4,12 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
-#include <stack>
-#include <queue>
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <cmath>
+#include <stack>
+#include <queue>
 
 Graph::Graph() {
     
@@ -20,7 +20,7 @@ Graph::Graph(std::string fileName) {
     //this part reads each line and stores each line of the data in a vector of strings.
     std::vector<std::string> vecOfStrs;
     std::ifstream in(fileName.c_str());
-    if(!in)
+    if(!in) 
     {
         std::cerr << "Cannot open the File : "<< fileName << std::endl;
     }
@@ -130,6 +130,7 @@ void Graph::removeVertex(std::string airportName) {
     }
 }
 
+
 std::unordered_map<std::string, std::pair<std::string, double>> Graph::Dijkstra(std::string source) {
     std::unordered_map<std::string, double> distanceFromSource;
     std::unordered_map<std::string, bool> visited; 
@@ -197,10 +198,26 @@ std::unordered_map<std::string, std::pair<std::string, double>> Graph::Dijkstra(
             " is a self-route!";
         }
     }
+    std::ofstream outputfile;
+    outputfile.open("Dijkstra's Algorithm Output");
+    for (auto elems : paths) {
+        outputfile << "Path: " + elems.second.first << std::endl;
+        outputfile << "Distance: " << elems.second.second << std::endl;
+        outputfile << " " << std::endl;
+    }
     return paths;
 }
 
 std::string Graph::landmarkPathAlgorithm(std::string start, std::string landmark, std::string destination) {
+    if (verticies.find(start) == verticies.end()) {
+        return "Origin airport does not exist.";
+    }
+    if (verticies.find(landmark) == verticies.end()) {
+        return "Landmark airport does not exist.";
+    } 
+    if (verticies.find(destination) == verticies.end()) {
+        return "Destination airport does not exist.";
+    }  
     //find shortest path from start to landmark
     std::unordered_map<std::string, std::pair<std::string, double>> pathsFromOrigin = Dijkstra(start);
     //find shortest path from landmark to destination
@@ -211,7 +228,49 @@ std::string Graph::landmarkPathAlgorithm(std::string start, std::string landmark
     if (pathsFromLandmark[destination].second == 9999999) {
         return "landmark path not possible, no path can be made from landmark to destination airport";
     }
+    std::ofstream outputfile;
+    outputfile.open("Landmark Path Algorithm Output");
+    outputfile << "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + "Landmark Airport to Destination: " + pathsFromLandmark[destination].first << std::endl;
     return "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + "Landmark Airport to Destination: " + pathsFromLandmark[destination].first;
 }
 
-
+std::vector<std::string> Graph::BFS(std::string startAirport) {
+    std::vector<std::string> order;
+    if (verticies.find(startAirport) == verticies.end()) {
+        order.push_back("Origin airport does not exist.");
+        return order;
+    }
+    std::unordered_map<std::string, bool> visited;
+    //keeping track of all visited verticies;
+    for (auto elem : verticies) {
+        visited[elem.first] = false;
+    }
+    //vector to keep track of the traversal order
+    std::queue<std::string> processor;
+    processor.push(startAirport);
+    visited[startAirport] = true;
+    order.push_back(startAirport);
+    //int sum = 1;
+    while (!processor.empty()) {
+        startAirport = processor.front();
+        processor.pop();
+        //int count = 0;
+        for (auto elem : adjacencyMatrix[startAirport]) {
+            if (!visited[elem.first] && elem.second != 0) {
+                visited[elem.first] = true;
+                order.push_back(elem.first);
+                processor.push(elem.first);
+                //count++;
+            }
+        }
+        //sum += count;
+    }
+    std::ofstream outputfile;
+    outputfile.open("BFS Algorithm Output");
+    outputfile << "NODES VISITED IN ORDER:" << std::endl;
+    for (unsigned i = 0; i < order.size(); i++) {
+        outputfile << i << ". " << order.at(i) << std::endl;
+    }
+    return order;
+    //std::cout << sum << std::endl;
+}

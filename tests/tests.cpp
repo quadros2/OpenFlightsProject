@@ -105,3 +105,56 @@ TEST_CASE("Landmark Path Algorithm works") {
         "landmark path not possible, no path can be made from landmark to destination airport");
     
 }
+
+TEST_CASE("BFS Algorithm Works") {
+    Graph a = Graph("data/airports.txt");
+    //check invalid inputs
+    REQUIRE(a.BFS("asdfasdfasdf").size() == 1);
+    REQUIRE(a.BFS("asdfasdfasdf").front() == "Origin airport does not exist.");
+
+    //check that traversal traverses 456 Airports in the continental US (456 airports located in the continental US in our dataset)
+    REQUIRE(a.BFS("Chicago O'Hare International Airport").size() == 456);
+    REQUIRE(a.BFS("Spokane International Airport").size() == 456);
+    REQUIRE(a.BFS("Bisbee Douglas International Airport").size() == 456);
+    REQUIRE(a.BFS("Atlantic City International Airport").size() == 456);
+    REQUIRE(a.BFS("Baltimore/Washington International Thurgood Marshall Airport").size() == 456);
+
+    //check that traversal traverses 16 Airports in Hawaii (16 airports located in Hawaii in our dataset)
+    REQUIRE(a.BFS("Hilo International Airport").size() == 16);
+    REQUIRE(a.BFS("Lanai Airport").size() == 16);
+    REQUIRE(a.BFS("Kahului Airport").size() == 16);
+    REQUIRE(a.BFS("Kaneohe Bay MCAS (Marion E. Carl Field) Airport").size() == 16);
+    REQUIRE(a.BFS("Kapalua Airport").size() == 16);
+
+    //check that traversal visits start node first
+    REQUIRE(a.BFS("Grand Forks International Airport").front() == "Grand Forks International Airport");
+    REQUIRE(a.BFS("Cleveland Hopkins International Airport").front() == "Cleveland Hopkins International Airport");
+    REQUIRE(a.BFS("Boise Air Terminal/Gowen Field").front() == "Boise Air Terminal/Gowen Field");
+
+    //check traversal visits nodes in correct order (nodes farthest from start get visited last)
+    //check that cleveland(closer to origin) gets visitied before Los Angeles(farther from origin than Cleveland)
+    std::vector<std::string> order = a.BFS("Chicago O'Hare International Airport");
+    int indexOne;
+    int indexTwo;
+    for (unsigned i = 0; i < order.size(); i++) {
+        if (order.at(i) == "Cleveland Hopkins International Airport") {
+            indexOne = i;
+        }
+        if (order.at(i) == "Los Angeles International Airport") {
+            indexTwo = i;
+        }
+    }
+    REQUIRE(indexOne < indexTwo);
+    
+    //check that Anchorage(closer to origin) gets visitied before Ft. Lauderdale(farther from origin than Anchorage)
+    order = a.BFS("Fairbanks International Airport");
+    for (unsigned i = 0; i < order.size(); i++) {
+        if (order.at(i) == "Ted Stevens Anchorage International Airport") {
+            indexOne = i;
+        }
+        if (order.at(i) == "Fort Lauderdale Hollywood International Airport") {
+            indexTwo = i;
+        }
+    }
+    REQUIRE(indexOne < indexTwo);
+}
