@@ -7,9 +7,9 @@ We intend on choosing the OpenFlights dataset, which contains a historical examp
 corresponding airports from recorded data in 2014.  The expectation is that our group will process the 
 OpenFlights dataset and load one or more data files - such as the flight routes - into a directed graph.  
 Our code will proceed to use the graph structure to run three different algorithms of interest.  For the 
-traversal algorithm we intend to select and implement DFS (Depth First Search) because it is the most 
-logical traversal for OpenFlights.  It is far more useful to traverse quickly from one node to the 
-destination node rather than broadly sweep a swath of nearby nodes in the graph.  For our covered algorithms 
+traversal algorithm we intend to select and implement BFS (Breadth First Search) because it seems like a 
+logical traversal for OpenFlights.  It more useful to broadly sweep a swath of nearby nodes in the graph 
+when we already have algorithms that traverse quickly from one node to the destination node.  For our covered algorithms 
 we will implement a Shortest Path algorithm in order to identify efficient, quick, and preferred routes.  
 Specifically, we will either employ the Floyd-Warshall Algorithm or Dijkstra’s Algorithm.  Lastly, our 
 group has proposed to utilize the Landmark Path algorithm - from the complex and uncovered options - in 
