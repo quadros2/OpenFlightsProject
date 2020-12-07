@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <stack>
+#include <queue>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -126,6 +128,90 @@ void Graph::removeVertex(std::string airportName) {
 
         verticies.erase(airportName);
     }
+}
+
+std::unordered_map<std::string, std::pair<std::string, double>> Graph::Dijkstra(std::string source) {
+    std::unordered_map<std::string, double> distanceFromSource;
+    std::unordered_map<std::string, bool> visited; 
+    //look at mp_mazes and create up tree of verticies to track paths                           
+    std::unordered_map<std::string, std::string> parent;
+    //source vertex doesn't exist
+    if (verticies.find(source) == verticies.end()) {
+        return std::unordered_map<std::string, std::pair<std::string, double>>();
+    }
+    //set up all possible verticies and paths
+    for (auto elem : verticies) {
+        distanceFromSource[elem.first] = 9999999; //9999999 = infinity in this case
+        visited[elem.first] = false;
+        parent[elem.first] = "unavailable"; 
+    }
+    distanceFromSource[source] = 0;            
+    for (auto elem : verticies) {
+        double min = 9999999; 
+        std::string airportName;  
+        for (auto elem : distanceFromSource) {
+            if (visited[elem.first] == false && distanceFromSource[elem.first] <= min) {
+                min = distanceFromSource[elem.first];
+                airportName = elem.first;
+            }
+        }
+        visited[airportName] = true;
+        for (auto elems : verticies) {
+            //check vertex is not visited, edge exists in adjacency matrix, and that path length is minimized
+            if(!visited[elems.first] && adjacencyMatrix[airportName][elems.first]) {
+                if (distanceFromSource[airportName] + adjacencyMatrix[airportName][elems.first] < distanceFromSource[elems.first]) {
+                    //treat like a disjoint setvector without path compression
+                    parent[elems.first] = airportName;
+                    distanceFromSource[elems.first] = distanceFromSource[airportName] + adjacencyMatrix[airportName][elems.first];
+                }
+            }
+        }
+    }
+    std::unordered_map<std::string, std::pair<std::string, double>> paths;
+    //printing paths
+    for (auto elem : verticies) {
+        paths[elem.first].second = distanceFromSource[elem.first];
+        std::string airp = elem.first;
+        std::string arrow = " -> ";
+        std::stack<std::string> stack;
+        stack.push(airp);
+        while (parent[airp] != "unavailable") {
+            stack.push(parent[airp]);
+            airp = parent[airp];
+        }
+        std::string path = "";
+        while (!stack.empty()) {
+            path += stack.top();
+            if (stack.size() != 1) {
+                path += arrow;
+            }
+            stack.pop();
+        }
+        paths[elem.first].first = path;
+        if (paths[elem.first].second == 9999999) {
+            paths[elem.first].first = "Path to " + elem.first +
+            " cannot be made! (Not possible to fly Cessna from continental US to Hawaii or Pacific territories)";
+        }
+        if (paths[elem.first].second == 0) {
+            paths[elem.first].first = "Path to " + elem.first +
+            " is a self-route!";
+        }
+    }
+    return paths;
+}
+
+std::string Graph::landmarkPathAlgorithm(std::string start, std::string landmark, std::string destination) {
+    //find shortest path from start to landmark
+    std::unordered_map<std::string, std::pair<std::string, double>> pathsFromOrigin = Dijkstra(start);
+    //find shortest path from landmark to destination
+    std::unordered_map<std::string, std::pair<std::string, double>> pathsFromLandmark = Dijkstra(landmark);
+    if (pathsFromOrigin[landmark].second == 9999999) {
+        return "landmark path not possible, no path can be made from origin to landmark airport";
+    }
+    if (pathsFromLandmark[destination].second == 9999999) {
+        return "landmark path not possible, no path can be made from landmark to destination airport";
+    }
+    return "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + "Landmark Airport to Destination: " + pathsFromLandmark[destination].first;
 }
 
 
