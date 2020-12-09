@@ -17,8 +17,9 @@ Graph::Graph() {
 
 Graph::Graph(std::string fileName) {
     
-    //this part reads each line and stores each line of the data in a vector of strings.
-    //reading txt file line by line from https://thispointer.com/c-how-to-read-a-file-line-by-line-into-a-vector/
+    // This part reads each line and stores each line of the data in a vector of strings.
+    // Reading txt file line by line from 
+    // https://thispointer.com/c-how-to-read-a-file-line-by-line-into-a-vector/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     std::vector<std::string> vecOfStrs;
     std::ifstream in(fileName.c_str());
@@ -36,32 +37,34 @@ Graph::Graph(std::string fileName) {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::vector<Airport> tempVerticies;
-    //This part converts the vector of string lines into airport objects and stores it in the veticies vector.
+    // This part converts the vector of string lines into airport objects and stores it in the 
+    // verticies vector.
     for (unsigned i = 0; i < vecOfStrs.size(); i++) {
-        //grab the string at index i
+        // Grab the string at index i
         std::string data = vecOfStrs.at(i);
-        //find the first and second comma
+        // Find the first and second comma
         std::vector<std::string> result;
 
-        //Code used to split a string from the commas is borrowed from https://www.tutorialspoint.com/parsing-a-comma-delimited-std-string-in-cplusplus
+        // Code used to split a string from the commas is borrowed from 
+        // https://www.tutorialspoint.com/parsing-a-comma-delimited-std-string-in-cplusplus
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        std::stringstream s_stream(data); //create string stream from the string
+        std::stringstream s_stream(data); // Create string stream from the string
         while(s_stream.good()) {
             std::string substr;
-            getline(s_stream, substr, ','); //get first string delimited by comma
+            getline(s_stream, substr, ','); // Get first string delimited by comma
             result.push_back(substr);
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //The important information is being pulled out of each line, converted into airport objects.
+        // The important information is being pulled out of each line, converted into airport objects.
         double latitude = std::stod(result.at(result.size() - 8));
         double longitude = std::stod(result.at(result.size() - 7));
         std::string name = result.at(1);
-        //removing quotation mark characters
+        // Removing quotation mark characters
         name.erase(name.size() - 1);
         name.erase(name.begin());
 
-        //creates airport and puts it in a verticies unordered map.
+        // Creates an airport and puts it in a verticies unordered map.
         Airport airport = Airport(latitude, longitude, name);
         verticies[name] = airport;
         
@@ -69,20 +72,21 @@ Graph::Graph(std::string fileName) {
 
     }
 
-    //code for creating edges
+    // Code for creating edges
     for (unsigned i = 0; i < tempVerticies.size(); i++) {
         for (unsigned j = 0; j < tempVerticies.size(); j++) {
-            //avoiding self edges
+            // Avoiding self edges
             if (j == i) {
                 continue;
             }
 
             Airport airportOne = tempVerticies.at(i);
             Airport airportTwo = tempVerticies.at(j);
-            //according to usgs.gov, one degree of latitude is ~69 miles, one degree of longitude is ~54.6 miles
+            // According to usgs.gov, one degree of latitude is ~69 miles, one degree of longitude 
+            // is ~54.6 miles
             double distance = sqrt(pow((airportOne.longitude - airportTwo.longitude) * 54.6, 2) 
                 + pow((airportOne.latitude - airportTwo.latitude) * 69, 2));
-            //only adding edges between airports that are within 800 nautical miles
+            // Only adding edges between airports that are within 800 nautical miles
             if (distance < 800) {
                 adjacencyMatrix[airportOne.name][airportTwo.name] = distance;
             } else {
@@ -94,12 +98,12 @@ Graph::Graph(std::string fileName) {
 
 void Graph::insertVertex(double latitude, double longitude, std::string airportName) {
     Airport airport = Airport(latitude, longitude, airportName);
-    //if vertex does not exist already, add it and make empty entry in adjancy matrix.
+    // If vertex does not exist already, add it and make empty entry in adjancy matrix.
     if (verticies.find(airportName) == verticies.end()) {
         verticies[airportName] = airport;
         adjacencyMatrix[airportName] = std::unordered_map<std::string, double>();
     }
-    //insert edges that can be made by new vertex
+    // Insert edges that can be made by new vertex
     for (auto i = verticies.begin(); i != verticies.end(); i++) {
         Airport airportTwo = i->second;
         if (airportTwo.name == airport.name) {
@@ -118,7 +122,7 @@ void Graph::insertVertex(double latitude, double longitude, std::string airportN
 
 }
 
-//logic borrowed from graph.h in lab_ml
+// Logic borrowed from graph.h in lab_ml
 void Graph::removeVertex(std::string airportName) {
     if (adjacencyMatrix.find(airportName) != adjacencyMatrix.end()) {
         for (auto it = adjacencyMatrix[airportName].begin(); it != adjacencyMatrix[airportName].end(); it++) {
@@ -138,61 +142,64 @@ void Graph::removeVertex(std::string airportName) {
     }
 }
 
-//pseudocode used to develope Dijkstra's algorithm: https://courses.cs.washington.edu/courses/cse326/00wi/handouts/lecture22/sld014.htm
+// Pseudocode used to develope Dijkstra's algorithm: https://courses.cs.washington.edu/courses/cse326/00wi/handouts/lecture22/sld014.htm
 
 std::unordered_map<std::string, std::pair<std::string, double>> Graph::Dijkstra(std::string source) {
     std::unordered_map<std::string, double> distanceFromSource;
     std::unordered_map<std::string, bool> visited; 
-    //look at mp_mazes and create up tree of verticies to track paths                           
+    // Look at mp_mazes and create up tree of verticies to track paths                           
     std::unordered_map<std::string, std::string> parent;
-    //source vertex doesn't exist
+    // Source vertex doesn't exist
     if (verticies.find(source) == verticies.end()) {
         return std::unordered_map<std::string, std::pair<std::string, double>>();
     }
-    //set up all possible verticies and paths with default values
+    // Set up all possible verticies and paths with default values
     for (auto elem : verticies) {
-        distanceFromSource[elem.first] = 9999999; //9999999 = infinity in this case
+        distanceFromSource[elem.first] = 9999999; // 9999999 = infinity in this case
         visited[elem.first] = false;
-        parent[elem.first] = "unavailable"; 
+        parent[elem.first] = "Unavailable"; 
     }
-    //initializing the cost of the source node to zero
+    // Initializing the cost of the source node to zero
     distanceFromSource[source] = 0;
-    //iterating through every unknown node in the graph            
+    // Iterating through every unknown node in the graph            
     for (auto elem : verticies) {
-        //set min to infinite until node with lower cost is found
+        // Set min to infinite until node with lower cost is found
         double min = 9999999; 
         std::string airportName;
-        //finding node that hasn't been visited and is at the lowest cost, and lower than current min  
+        // Finding node that hasn't been visited and is at the lowest cost, and lower than current min  
         for (auto elem : distanceFromSource) {
             if (visited[elem.first] == false && distanceFromSource[elem.first] <= min) {
                 min = distanceFromSource[elem.first];
                 airportName = elem.first;
             }
         }
-        //marking current node as known
+        // Marking current node as known
         visited[airportName] = true;
-        //for each node elems which is adjacent to airport name...
+        // For each node elems which is adjacent to airport name...
         for (auto elems : verticies) {
-            //checking that elems is adjacent to airportname and hasn't been visited
+            // Checking that elems is adjacent to airportname and hasn't been visited
             if(!visited[elems.first] && adjacencyMatrix[airportName][elems.first]) {
-                //adjacent vertex cost will remain the same or be change to (adjacent node's cost) + (cost of adjacencyMatrix[airportName][elems.first])
-                if (distanceFromSource[airportName] + adjacencyMatrix[airportName][elems.first] < distanceFromSource[elems.first]) {
-                    //treat like a disjoint setvector without path compression
+                // Adjacent vertex cost will remain the same or be change to (adjacent node's cost) 
+                // + (cost of adjacencyMatrix[airportName][elems.first])
+                if (distanceFromSource[airportName] + adjacencyMatrix[airportName][elems.first] < 
+                    distanceFromSource[elems.first]) {
+                    // Treat like a disjoint set-vector without path compression
                     parent[elems.first] = airportName;
-                    distanceFromSource[elems.first] = distanceFromSource[airportName] + adjacencyMatrix[airportName][elems.first];
+                    distanceFromSource[elems.first] = distanceFromSource[airportName] + 
+                        adjacencyMatrix[airportName][elems.first];
                 }
             }
         }
     }
     std::unordered_map<std::string, std::pair<std::string, double>> paths;
-    //printing paths
+    // Printing paths
     for (auto elem : verticies) {
         paths[elem.first].second = distanceFromSource[elem.first];
         std::string airp = elem.first;
         std::string arrow = " -> ";
         std::stack<std::string> stack;
         stack.push(airp);
-        while (parent[airp] != "unavailable") {
+        while (parent[airp] != "Unavailable") {
             stack.push(parent[airp]);
             airp = parent[airp];
         }
@@ -207,7 +214,7 @@ std::unordered_map<std::string, std::pair<std::string, double>> Graph::Dijkstra(
         paths[elem.first].first = path;
         if (paths[elem.first].second == 9999999) {
             paths[elem.first].first = "Path to " + elem.first +
-            " cannot be made! (Not possible to fly Cessna from continental US to Hawaii or Pacific territories)";
+            " cannot be made! (Cessna can't fly from continental US to Hawaii or Pacific territories)";
         }
         if (paths[elem.first].second == 0) {
             paths[elem.first].first = "Path to " + elem.first +
@@ -224,7 +231,7 @@ std::unordered_map<std::string, std::pair<std::string, double>> Graph::Dijkstra(
     return paths;
 }
 
-//no psuedocode used to develop algorithm
+// No psuedocode used to develop algorithm
 std::string Graph::landmarkPathAlgorithm(std::string start, std::string landmark, std::string destination) {
     if (verticies.find(start) == verticies.end()) {
         return "Origin airport does not exist.";
@@ -235,23 +242,25 @@ std::string Graph::landmarkPathAlgorithm(std::string start, std::string landmark
     if (verticies.find(destination) == verticies.end()) {
         return "Destination airport does not exist.";
     }  
-    //find shortest path from start to landmark
+    // Find shortest path from start to landmark
     std::unordered_map<std::string, std::pair<std::string, double>> pathsFromOrigin = Dijkstra(start);
-    //find shortest path from landmark to destination
+    // Find shortest path from landmark to destination
     std::unordered_map<std::string, std::pair<std::string, double>> pathsFromLandmark = Dijkstra(landmark);
     if (pathsFromOrigin[landmark].second == 9999999) {
-        return "landmark path not possible, no path can be made from origin to landmark airport";
+        return "Landmark path not possible, no path can be made from origin to landmark airport.";
     }
     if (pathsFromLandmark[destination].second == 9999999) {
-        return "landmark path not possible, no path can be made from landmark to destination airport";
+        return "Landmark path not possible, no path can be made from landmark to destination airport.";
     }
     std::ofstream outputfile;
     outputfile.open("Landmark Path Algorithm Output");
-    outputfile << "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + "Landmark Airport to Destination: " + pathsFromLandmark[destination].first << std::endl;
-    return "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + "Landmark Airport to Destination: " + pathsFromLandmark[destination].first;
+    outputfile << "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + 
+        "Landmark Airport to Destination: " + pathsFromLandmark[destination].first << std::endl;
+    return "Origin Airport to Landmark: " + pathsFromOrigin[landmark].first + "\n" + 
+        "Landmark Airport to Destination: " + pathsFromLandmark[destination].first;
 }
 
-//pseudocode found on the CS225 website
+// Pseudocode found on the CS225 website
 std::vector<std::string> Graph::BFS(std::string startAirport) {
     std::vector<std::string> order;
     if (verticies.find(startAirport) == verticies.end()) {
@@ -259,20 +268,20 @@ std::vector<std::string> Graph::BFS(std::string startAirport) {
         return order;
     }
     std::unordered_map<std::string, bool> visited;
-    //keeping track of all visited verticies;
+    // Keeping track of all visited verticies;
     for (auto elem : verticies) {
         visited[elem.first] = false;
     }
-    //vector to keep track of the traversal order
+    // Vector to keep track of the traversal order
     std::queue<std::string> processor;
     processor.push(startAirport);
     visited[startAirport] = true;
     order.push_back(startAirport);
-    //int sum = 1;
+    // int sum = 1;
     while (!processor.empty()) {
         startAirport = processor.front();
         processor.pop();
-        //int count = 0;
+        // int count = 0;
         for (auto elem : adjacencyMatrix[startAirport]) {
             if (!visited[elem.first] && elem.second != 0) {
                 visited[elem.first] = true;
@@ -281,7 +290,7 @@ std::vector<std::string> Graph::BFS(std::string startAirport) {
                 //count++;
             }
         }
-        //sum += count;
+        // sum += count;
     }
     std::ofstream outputfile;
     outputfile.open("BFS Algorithm Output");
@@ -290,5 +299,5 @@ std::vector<std::string> Graph::BFS(std::string startAirport) {
         outputfile << i << ". " << order.at(i) << std::endl;
     }
     return order;
-    //std::cout << sum << std::endl;
+    // std::cout << sum << std::endl;
 }
