@@ -9,9 +9,11 @@ Our group used the OpenFlights dataset with flight routes and airports from 2014
 3. Landmark Path Algorithm: Complex algorithm to find shortest path from A to B through a distinct point C.
 
 ### Compiling Our Code
-Simply type *make* in the terminal and then type *./finalproj* to compile the files and run the contents of main.cpp.  Review the contents of Makefile if you would like any additional information.
+Remember to type `git pull origin master` into the terminal to ensure your local codebase is up to date.  Then, simply type `make` in the terminal and then type `./finalproj` to compile the files and run the contents of main.cpp.  Review the contents of Makefile if you would like any additional information.
 
 ### Testing Our Code
-Type *make test* into the terminal and then type *./test* to run our customized test bench and all of its assertions.  Review or edit the contents of tests.cpp to to examine or modify the test bench.
+Once again, type `git pull origin master` to maintain a current codebase.  Afterwards, type `make test` into the terminal followed by `./test` to run our customized test bench and all of its assertions.  Review or edit the contents of tests.cpp to to examine or modify the test bench.
+
+### Input Format
   
 
