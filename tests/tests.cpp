@@ -87,11 +87,11 @@ TEST_CASE("Dijikstras algorithm works") {
    airportName = "Fort Lauderdale Executive Airport";
    std::unordered_map<std::string, std::pair<std::string, double>> pathstest7 = a.Dijkstra(airportName);
    REQUIRE(pathstest7["Kahului Airport"].first == 
-        "Path to Kahului Airport cannot be made! (Not possible to fly Cessna from continental US to Hawaii or Pacific territories)");
+        "Path to Kahului Airport cannot be made! (Cessna can't fly from continental US to Hawaii or Pacific territories)");
     REQUIRE(pathstest7["Kaneohe Bay MCAS (Marion E. Carl Field) Airport"].first == 
-        "Path to Kaneohe Bay MCAS (Marion E. Carl Field) Airport cannot be made! (Not possible to fly Cessna from continental US to Hawaii or Pacific territories)");
+        "Path to Kaneohe Bay MCAS (Marion E. Carl Field) Airport cannot be made! (Cessna can't fly from continental US to Hawaii or Pacific territories)");
     REQUIRE(pathstest7["Lanai Airport"].first == 
-        "Path to Lanai Airport cannot be made! (Not possible to fly Cessna from continental US to Hawaii or Pacific territories)");
+        "Path to Lanai Airport cannot be made! (Cessna can't fly from continental US to Hawaii or Pacific territories)");
 }
 
 TEST_CASE("Landmark Path Algorithm works") {
@@ -100,9 +100,9 @@ TEST_CASE("Landmark Path Algorithm works") {
 
     //testing that a path from origin to landmark can be made
     REQUIRE(a.landmarkPathAlgorithm("Baton Rouge Metropolitan Airport", "Lanai Airport", "Tulsa International Airport") ==
-        "landmark path not possible, no path can be made from origin to landmark airport");
+        "Landmark path not possible, no path can be made from origin to landmark airport.");
     REQUIRE(a.landmarkPathAlgorithm("Baton Rouge Metropolitan Airport", "Tulsa International Airport", "Lanai Airport") ==
-        "landmark path not possible, no path can be made from landmark to destination airport");
+        "Landmark path not possible, no path can be made from landmark to destination airport.");
     
 }
 
