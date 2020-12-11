@@ -9,11 +9,13 @@ Our group used the OpenFlights dataset with flight routes and airports from 2014
 3. Landmark Path Algorithm: Complex algorithm to find shortest path from A to B through a distinct point C.
 
 ### Compiling Our Code
-Remember to type `git pull origin master` into the terminal to ensure your local codebase is up to date.  Then, simply type `make` in the terminal and then type `./finalproj` to compile the files and run the contents of main.cpp.  Review the contents of Makefile if you would like any additional information.
+Remember to type `git pull origin master` into the terminal to ensure your local codebase is up to date.  Then, simply type `make` in the terminal and then type `./finalproj` to compile the files and run the contents of `main.cpp`.  Review the contents of `Makefile` if you would like any additional information.
 
 ### Testing Our Code
-Once again, type `git pull origin master` to maintain a current codebase.  Afterwards, type `make test` into the terminal followed by `./test` to run our customized test bench and all of its assertions.  Review or edit the contents of tests.cpp to to examine or modify the test bench.
+Once again, type `git pull origin master` to maintain a current codebase.  Afterwards, type `make test` into the terminal followed by `./test` to run our customized test bench and all of its assertions.  Review or edit the contents of `tests.cpp` to to examine or modify the test bench.
 
 ### Input Format
-  
+Run each individual function one at a time in `main.cpp` to analyze how each function works.  Each function takes in an airport name as its input.  Additionally, the proper format for our dataset or any dataset that is compatible with our project is demostrated here: https://openflights.org/data.html.  For example, a sample entry looks like this *507,"London Heathrow Airport","London","United Kingdom","LHR","EGLL",51.4706,-0.461941,83,0,"E","Europe/London","airport","OurAirports"*.
+
+## Thank you!
 
